@@ -143,6 +143,26 @@ extension Analytics {
 extension Analytics {
     /// Tracks an event performed by a user, including some additional event properties.
     /// - Parameters:
+    ///   - messageId: The unique identifier for the TrackEvent
+    ///   - name: Name of the action, e.g., 'Purchased a T-Shirt'
+    ///   - properties: A dictionary or properties specific to the named event.
+    ///     For example, an event with the name 'Purchased a Shirt' might have properties
+    ///     like revenue or size.
+    public func track(messageId: String, name: String, properties: [String: Any]? = nil) {
+        var props: JSON? = nil
+        if let properties = properties {
+            do {
+                props = try JSON(properties)
+            } catch {
+                reportInternalError(error, fatal: true)
+            }
+        }
+        let event = TrackEvent(messageId: messageId, event: name, properties: props)
+        process(incomingEvent: event)
+    }
+
+    /// Tracks an event performed by a user, including some additional event properties.
+    /// - Parameters:
     ///   - name: Name of the action, e.g., 'Purchased a T-Shirt'
     ///   - properties: A dictionary or properties specific to the named event.
     ///     For example, an event with the name 'Purchased a Shirt' might have properties

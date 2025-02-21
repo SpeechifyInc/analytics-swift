@@ -47,7 +47,8 @@ public struct TrackEvent: RawEvent {
     public var event: String
     public var properties: JSON?
     
-    public init(event: String, properties: JSON?) {
+    public init(messageId: String? = nil, event: String, properties: JSON?) {
+        self.messageId = messageId
         self.event = event
         self.properties = properties
     }
@@ -303,7 +304,7 @@ extension RawEvent {
         result.enrichments = enrichments
         result.anonymousId = userInfo.anonymousId
         result.userId = userInfo.userId
-        result.messageId = UUID().uuidString
+        result.messageId = result.messageId ?? UUID().uuidString
         result.timestamp = Date().iso8601()
         result.integrations = try? JSON([String: Any]())
         result._metadata = DestinationMetadata()
